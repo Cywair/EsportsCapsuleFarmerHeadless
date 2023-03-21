@@ -2,14 +2,15 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 import time
 import argparse
+from selenium.webdriver.chrome.options import Options
 
 # Classes
 from EsportsCapsuleFarmer.Setup.LoginHandler import LoginHandler
 from EsportsCapsuleFarmer.Setup.VersionManager import VersionManager
-from EsportsCapsuleFarmer.Setup.Webdriver import Webdriver
+# from EsportsCapsuleFarmer.Setup.Webdriver import Webdriver
 from EsportsCapsuleFarmer.Setup.Logger.Logger import Logger
 from EsportsCapsuleFarmer.Setup.Config import Config
-
+from selenium import webdriver
 from EsportsCapsuleFarmer.Match import Match
 
 ###################################################
@@ -42,7 +43,13 @@ if not VersionManager.isLatestVersion(CURRENT_VERSION):
     log.warning("!!! NEW VERSION AVAILABLE !!! Download it from: https://github.com/LeagueOfPoro/EsportsCapsuleFarmer/releases/latest")
 
 try:
-    driver = Webdriver(browser=browser, headless=isHeadless and hasAutoLogin).createWebdriver()
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox") # linux only
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.71"
+    options.add_argument(f'user-agent={user_agent}')
+    driver = webdriver.Chrome(options=options)
+    # driver = Webdriver(browser=browser, headless=isHeadless and hasAutoLogin).createWebdriver()
 except Exception as ex:
     print(ex)
     print("CANNOT CREATE A WEBDRIVER! Are you running the latest browser version? Check the configured browser for any updates!\nPress any key to exit...")
